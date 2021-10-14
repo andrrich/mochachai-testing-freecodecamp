@@ -6,14 +6,26 @@ const cors = require('cors');
 const runner = require('./test-runner');
 
 const bodyParser = require('body-parser');
+
+// Basic Configuration
+const port = process.env.PORT || 3000;
+
+app.use(cors());
+
+app.use('/public', express.static(`${process.cwd()}/public`));
+
+app.use(function(req, res, next){
+  console.log(req.method + " " + req.path + " - " + req.ip);
+  next();
+});
+
 app.use(bodyParser.json());
 
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 })
 
-app.use(express.static(__dirname + '/public'));
-
+//App code
 app.get('/hello', function (req, res) {
   const name = req.query.name || 'Guest';
   res.type('txt').send('hello ' + name);
